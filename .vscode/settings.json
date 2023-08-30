@@ -1,0 +1,18 @@
+{
+    "[python]": {
+        "editor.defaultFormatter": "ms-python.black-formatter"
+    },
+    "python.formatting.provider": "none",
+    "cSpell.words": [
+        "driverfactory",
+        "driversettings",
+        "metalarchivespage",
+        "openpyxl",
+        "seleniumutils"
+    ],
+    "cSpell.language": "en,pt",
+    "cSpell.languageSettings": [
+        
+
+    ]
+}
