@@ -3,6 +3,7 @@ from selenium.webdriver.common.by import By
 from selenium_configs.seleniumutils import SeleniumUtils
 from data.variables import Locators
 import openpyxl
+import os
 
 
 class MetalArchivesSearchPage(SeleniumUtils, DriverSettings, Locators):
@@ -37,7 +38,7 @@ class MetalArchivesSearchPage(SeleniumUtils, DriverSettings, Locators):
         ##########  Crete Excel SpreadSheet #########
         workbook = openpyxl.Workbook()
         sheet = workbook.active
-        sheet.append(("Banda", "Estilo", "Localidade"))
+        sheet.append(self.header)
         #############################################
         try:
             self.wait_element_enabled_tag("td")
@@ -67,10 +68,18 @@ class MetalArchivesSearchPage(SeleniumUtils, DriverSettings, Locators):
                     # Tuple to store data for append each line in the Excel file
                     data = (band_name, genre, location)
                     sheet.append(data)
-        except Exception as error:
-            print("Something went wrong, check the error message:\n" + error)
+            print("Data successfully fetched, creating Excel sheet...")
+            try:
+                full_filename = self.filename + self.country_name + ".xlsx"
+                workbook.save(full_filename)
+                print("File successfully created with the name:\n" + full_filename)
+            except Exception:
+                print("Something went wrong to create the Excel sheet")
+            finally:
+                print("The file creation was finished.")
+        except Exception:
+            print("Something went wrong... :-(")
         finally:
-            workbook.save(self.filename + ".xlsx")
             workbook.close()
 
     def close_driver(self):

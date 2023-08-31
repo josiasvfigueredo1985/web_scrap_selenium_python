@@ -4,7 +4,8 @@ class Locators:
     base_url = "https://www.metal-archives.com/"
 
     ##########  Excel File  ##########
-    filename = "./generated_files/Bandas_MG"
+    filename = "./Bandas_"
+    header = ("Band", "Genre", "Location")
 
     ##########  Advanced Search  ##########
     adv_search = "//*[text()='Advanced search']"

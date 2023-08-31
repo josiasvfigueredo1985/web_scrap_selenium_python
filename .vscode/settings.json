@@ -6,6 +6,7 @@
     "cSpell.words": [
         "driverfactory",
         "driversettings",
+        "firefox",
         "metalarchivespage",
         "openpyxl",
         "seleniumutils"
@@ -14,5 +15,8 @@
     "cSpell.languageSettings": [
         
 
+    ],
+    "python.analysis.extraPaths": [
+        "./steps"
     ]
 }
