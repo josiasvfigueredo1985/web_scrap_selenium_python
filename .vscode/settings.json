@@ -1,8 +1,4 @@
 {
-    "[python]": {
-        "editor.defaultFormatter": "ms-python.black-formatter"
-    },
-    "python.formatting.provider": "none",
     "cSpell.words": [
         "driverfactory",
         "driversettings",
@@ -17,6 +13,16 @@
 
     ],
     "python.analysis.extraPaths": [
-        "./steps"
-    ]
+        "."
+    ],
+    "python-envs.defaultEnvManager": "ms-python.python:system",
+    "python.testing.unittestArgs": [
+        "-v",
+        "-s",
+        "./tests",
+        "-p",
+        "test_*.py"
+    ],
+    "python.testing.pytestEnabled": false,
+    "python.testing.unittestEnabled": true
 }

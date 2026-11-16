@@ -1,5 +1,5 @@
 from selenium import webdriver
-from data.browsers import Browsers
+from src.browser.browsers import Browsers
 
 
 class DriverFactory:

@@ -1,8 +1,8 @@
-from selenium_configs.driverfactory import DriverFactory
+from src.browser.driver_factory import DriverFactory
 from selenium.webdriver.support.ui import WebDriverWait
-from data.variables import Locators
+from src.config.search_settings import SearchSettings
 
-base_url = Locators().base_url
+base_url = SearchSettings().base_url
 
 
 class DriverSettings:

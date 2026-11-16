@@ -1,0 +1,81 @@
+name: Tests and report
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    outputs:
+      pages_artifact: ${{ steps.pages_artifact.outcome }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+          cache: pip
+          cache-dependency-path: requirements-dev.txt
+      - name: Install report dependencies
+        run: python -m pip install -r requirements-dev.txt
+      - name: Run tests
+        run: |
+          mkdir -p site
+          python -m pytest tests -v --html=site/index.html --self-contained-html
+      - name: Check report exists
+        id: report
+        if: ${{ !cancelled() }}
+        run: |
+          if [ -f site/index.html ]; then
+            echo "exists=true" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Upload downloadable report
+        id: report_artifact
+        if: ${{ !cancelled() && steps.report.outputs.exists == 'true' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-report
+          path: site/index.html
+          if-no-files-found: error
+      - name: Link downloadable report
+        if: ${{ !cancelled() && steps.report_artifact.outcome == 'success' }}
+        env:
+          REPORT_URL: ${{ steps.report_artifact.outputs.artifact-url }}
+        run: |
+          echo "Downloadable test report: $REPORT_URL"
+          echo "[Download test report]($REPORT_URL)" >> "$GITHUB_STEP_SUMMARY"
+      - name: Upload Pages artifact
+        id: pages_artifact
+        if: ${{ !cancelled() && steps.report.outputs.exists == 'true' && github.ref == 'refs/heads/main' && github.event_name != 'pull_request' }}
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+
+  publish:
+    needs: test
+    if: ${{ !cancelled() && needs.test.outputs.pages_artifact == 'success' && github.ref == 'refs/heads/main' && github.event_name != 'pull_request' }}
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    concurrency:
+      group: pages
+      cancel-in-progress: false
+    steps:
+      - name: Deploy report
+        id: deploy
+        uses: actions/deploy-pages@v4
+      - name: Link browser report
+        env:
+          REPORT_URL: ${{ steps.deploy.outputs.page_url }}
+        run: |
+          echo "Test report: $REPORT_URL"
+          echo "[Open test report]($REPORT_URL)" >> "$GITHUB_STEP_SUMMARY"
